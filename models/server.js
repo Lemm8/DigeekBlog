@@ -25,8 +25,8 @@ class Server {
         // CONEXIÓN CON BD
         this.conectarDB();
 
-        // // MIDDLEWARES (FUNCIONES QUE AÑADEN FUNCIONACLIDADES AL SERVER, SE EJCUTAN SIEMPRE QUE SE LEVANTE EL SERVER)
-        // this.middlewares();
+        // MIDDLEWARES (FUNCIONES QUE AÑADEN FUNCIONACLIDADES AL SERVER, SE EJCUTAN SIEMPRE QUE SE LEVANTE EL SERVER)
+        this.middlewares();
 
 
         // ESTABLECER RUTAS
@@ -38,6 +38,7 @@ class Server {
         try {
             
             await db.authenticate();
+            await db.sync( { force: true } );
             console.log( 'Database online' );
 
         } catch ( error ) {

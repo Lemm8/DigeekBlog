@@ -5,9 +5,27 @@ const Usuario = require('../models/usuario');
 const getUsuarios = async ( req = request, res = response ) => {
     try {
         
+        let { limit, offset } = req.query;
+
+        if ( !limit ) {
+            limit = 10
+        }
+
+        if ( !offset ) {
+            offset = 0
+        }
+
+        const usuarios = await Usuario.findAndCountAll({
+            limit,
+            offset,
+            where: {
+                estado: true
+            }
+        })
+
         return res.status( 200 ).json({
             status: 200,
-            msg: 'GET - Usuarios'
+            usuarios
         });
 
     } catch (error) {
@@ -25,9 +43,23 @@ const getUsuario = async ( req = request, res = response ) => {
         
         const { id } = req.params;
 
+        const usuario = await Usuario.findOne( {
+            where: {
+                id,
+                estado: true
+            }
+        });
+
+        if ( !usuario ) {
+            return res.status( 404 ).json({
+                status: 404,
+                msg: `No se encontro un usuario con el id ${id }`
+            })
+        }        
+
         return res.status( 200 ).json({
             status: 200,
-            msg: `GET - Usuario ${ id }`
+            usuario
         });
 
     } catch (error) {
@@ -45,10 +77,12 @@ const postUsuario = async ( req = request, res = response ) => {
         
         const { body } = req;
 
+        const usuario = await Usuario.create( body );
+
         return res.status( 200 ).json({
             status: 200,
-            msg: 'POST - Usuario',
-            body
+            msg: 'Usuario creado',
+            usuario
         });
 
     } catch (error) {
@@ -65,15 +99,33 @@ const putUsuario = async ( req = request, res = response ) => {
     try {
         
         const { id } = req.params;
-        const { body } = req;
+        const { nombre, apellidos } = req.body;
+
+        const usuario = await Usuario.findOne( { 
+            where: { 
+                id,
+                estado: true
+            } 
+        });
+
+        if ( !usuario ) {
+            return res.status( 404 ).json({
+                status: 404,
+                msg: `No se encontro un usuario con el id ${id }`
+            })
+        }   
+
+        if ( nombre ) usuario.nombre = nombre;
+        if ( apellidos ) usuario.apellidos = apellidos;
+
+        const updateUsuario = await usuario.save();        
 
         return res.status( 200 ).json({
             status: 200,
-            msg: `PUT - Usuario ${ id } `,
-            body
+            updateUsuario
         });
 
-    } catch (error) {
+    } catch ( error ) {
         console.log( error );
         return res.status( 500 ).json({
             status: 500,
@@ -87,10 +139,29 @@ const deleteUsuario = async ( req = request, res = response ) => {
     try {
 
         const { id } = req.params;
-        
+
+        const usuario = await Usuario.findOne( { 
+            where: { 
+                id,
+                estado: true
+            } 
+        });
+
+        if ( !usuario ) {
+            return res.status( 404 ).json({
+                status: 404,
+                msg: `No se encontro un usuario con el id ${id }`
+            })
+        }   
+
+        usuario.estado = false;
+
+        const updateUsuario = await usuario.save();        
+
         return res.status( 200 ).json({
             status: 200,
-            msg: `DELETE - Usuario ${ id }`
+            msg: 'Usuario eliminado',
+            updateUsuario
         });
 
     } catch (error) {

@@ -19,6 +19,12 @@ Usuario.init({
       type: DataTypes.STRING,
       allowNull: false,
       unique: true
+  },
+  
+  estado: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true
   }
 
 }, {
