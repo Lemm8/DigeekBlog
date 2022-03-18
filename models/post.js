@@ -18,6 +18,12 @@ Post.init({
   imagen: {
       type: DataTypes.STRING,
       allowNull: true,
+  },
+
+  estado: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true
   }
 
 }, {

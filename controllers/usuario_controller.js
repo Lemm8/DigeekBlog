@@ -23,6 +23,13 @@ const getUsuarios = async ( req = request, res = response ) => {
             }
         })
 
+        if ( usuarios.count === 0 ) {
+            return res.status( 404 ).json({
+                status: 404,
+                msg: 'No hay registros de usuarios en la base de datos'
+            });
+        }
+
         return res.status( 200 ).json({
             status: 200,
             usuarios
@@ -49,14 +56,7 @@ const getUsuario = async ( req = request, res = response ) => {
                 estado: true
             }
         });
-
-        if ( !usuario ) {
-            return res.status( 404 ).json({
-                status: 404,
-                msg: `No se encontro un usuario con el id ${id }`
-            })
-        }        
-
+        
         return res.status( 200 ).json({
             status: 200,
             usuario

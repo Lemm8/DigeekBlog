@@ -10,6 +10,12 @@ Comentario.init({
     allowNull: false
   },
 
+  estado: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true
+  }
+
 }, {
 
   tableName: 'comentarios',

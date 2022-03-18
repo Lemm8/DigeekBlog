@@ -10,6 +10,12 @@ Area.init({
     allowNull: false
   },
 
+  estado: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true
+  }
+
 }, {
   tableName: 'Areas',
   sequelize: db, // We need to pass the connection instance
