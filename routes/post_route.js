@@ -7,21 +7,44 @@ const { getPosts,
         putPost,
         deletePost } = require('../controllers/post_controller');
 
+const { existePost,
+        existeUsuario,
+        existeArea } = require('../helpers/db-validators');
+
+const { validarCampos } = require('../middlewares/validar-campos');
+
 const router = Router();
 
-// OBTENER TODOS LOS PostS
+// OBTENER TODOS LOS POSTS
 router.get( '/', getPosts);
 
-// OBTENER UN Post
-router.get( '/:id', getPost);
+// OBTENER UN POST
+router.get( '/:id', [
+    check( 'id' ).custom( existePost ),
+    validarCampos
+],getPost);
 
-// CREAR UN Post
-router.post( '/', postPost );
+// CREAR UN POST
+router.post( '/', [
+    check( 'UsuarioId' ).exists(),
+    check( 'UsuarioId' ).custom( existeUsuario ),
+    check( 'AreaId' ).exists(),
+    check( 'AreaId' ).custom( existeArea ),
+    check( 'titulo', 'El título es obligatorio' ).exists(),
+    check( 'contenido', 'El contenido es obligatorio' ).exists(),
+    validarCampos
+],postPost );
 
-// ACTUALIZAR UN Post
-router.put( '/:id', putPost );
+// ACTUALIZAR UN POST
+router.put( '/:id', [
+    check( 'id' ).custom( existePost ),
+    validarCampos
+],putPost );
 
-// ELIMINAR UN Post
-router.delete( '/:id', deletePost );
+// ELIMINAR UN POST
+router.delete( '/:id', [
+    check( 'id' ).custom( existePost ),
+    validarCampos
+], deletePost );
 
 module.exports = router;

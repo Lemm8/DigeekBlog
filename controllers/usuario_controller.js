@@ -5,7 +5,7 @@ const Usuario = require('../models/usuario');
 const getUsuarios = async ( req = request, res = response ) => {
     try {
         
-        let { limit, offset } = req.query;
+        let { limit, offset, correo, nombre, apellidos } = req.query;
 
         if ( !limit ) {
             limit = 10
@@ -15,12 +15,17 @@ const getUsuarios = async ( req = request, res = response ) => {
             offset = 0
         }
 
+        let where = {
+            estado: true,
+            ...( correo && { correo } ),
+            ...( nombre && { nombre } ),
+            ...( apellidos && { apellidos } )
+        }
+
         const usuarios = await Usuario.findAndCountAll({
             limit,
             offset,
-            where: {
-                estado: true
-            }
+            where
         })
 
         if ( usuarios.count === 0 ) {
@@ -108,13 +113,6 @@ const putUsuario = async ( req = request, res = response ) => {
             } 
         });
 
-        if ( !usuario ) {
-            return res.status( 404 ).json({
-                status: 404,
-                msg: `No se encontro un usuario con el id ${id }`
-            })
-        }   
-
         if ( nombre ) usuario.nombre = nombre;
         if ( apellidos ) usuario.apellidos = apellidos;
 
@@ -122,6 +120,7 @@ const putUsuario = async ( req = request, res = response ) => {
 
         return res.status( 200 ).json({
             status: 200,
+            msg: 'Usuario actualizado',
             updateUsuario
         });
 
@@ -146,13 +145,6 @@ const deleteUsuario = async ( req = request, res = response ) => {
                 estado: true
             } 
         });
-
-        if ( !usuario ) {
-            return res.status( 404 ).json({
-                status: 404,
-                msg: `No se encontro un usuario con el id ${id }`
-            })
-        }   
 
         usuario.estado = false;
 

@@ -35,7 +35,7 @@ router.post( '/', [
 
 // ACTUALIZAR UN USUARIO
 router.put( '/:id', [
-    check( 'id' ).custom( existeUsuario ),
+    check( 'id' ).custom( existeUsuario ),    
     validarCampos
 ], putUsuario );
 

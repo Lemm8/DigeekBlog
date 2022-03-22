@@ -1,5 +1,7 @@
 const { Sequelize, DataTypes, Model } = require('sequelize');
 const db = require('../db/connection');
+const Area = require('./Area');
+const Usuario = require('./usuario');
 
 class Post extends Model {}
 
@@ -30,7 +32,21 @@ Post.init({
 
   tableName: 'posts',
   sequelize: db, // We need to pass the connection instance
-  modelName: 'Post' // We need to choose the model name
+  modelName: 'Post', // We need to choose the model name
+  defaultScope: {
+    where: {
+      estado: true,      
+    },
+    include: [{
+      model: Usuario,
+      as: 'Usuario',
+      required: true
+    }, {
+      model: Area,
+      as: 'Area',
+      required: true
+    }]
+  }
 
 });
 

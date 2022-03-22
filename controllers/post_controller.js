@@ -1,13 +1,45 @@
 const { response, request } = require('express');
 
 const Post = require('../models/post');
+const Area = require('../models/Area');
+const Usuario = require('../models/usuario');
 
 const getPosts = async ( req = request, res = response ) => {
     try {
         
+        let { limit, offset, titulo, area, usuario } = req.query;
+
+        if ( !limit ) {
+            limit = 10
+        }
+
+        if ( !offset ) {
+            offset = 0
+        }
+
+        let where = {
+            estado: true,
+            ...( titulo && { titulo } ),
+            ...( area && { AreaId: area } ),
+            ...( usuario && { UsuarioId: usuario } ),
+        }
+
+        const posts = await Post.findAndCountAll({
+            limit,
+            offset,            
+            where,
+        })
+
+        if ( posts.count === 0 ) {
+            return res.status( 404 ).json({
+                status: 404,
+                msg: 'No hay registros de Areas en la base de datos'
+            });
+        }
+
         return res.status( 200 ).json({
             status: 200,
-            msg: 'GET - Posts'
+            posts
         });
 
     } catch (error) {
@@ -25,9 +57,25 @@ const getPost = async ( req = request, res = response ) => {
         
         const { id } = req.params;
 
+        const area = await Post.findOne( {
+            include: [{
+                model: Area,
+                as: 'Area',
+                required: true
+            }, {
+                model: Usuario,
+                as: 'Usuario',
+                required: true 
+            }],
+            where: {
+                id,
+                estado: true
+            }
+        });
+        
         return res.status( 200 ).json({
             status: 200,
-            msg: `GET - Post ${ id }`
+            area
         });
 
     } catch (error) {
@@ -45,10 +93,26 @@ const postPost = async ( req = request, res = response ) => {
         
         const { body } = req;
 
+        const createdPost = await Post.create( 
+            body, {
+                include: [{
+                    model: Area,
+                    as: 'Area',
+                    required: true
+                }, {
+                    model: Usuario,
+                    as: 'Usuario',
+                    required: true 
+                }]
+            }
+        );
+
+        const post = await Post.findByPk( createdPost.id );
+
         return res.status( 200 ).json({
             status: 200,
-            msg: 'POST - Post',
-            body
+            msg: 'Post creado',
+            post
         });
 
     } catch (error) {
@@ -65,12 +129,25 @@ const putPost = async ( req = request, res = response ) => {
     try {
         
         const { id } = req.params;
-        const { body } = req;
+        const { titulo, contenido, imagen } = req.body;
+
+        const post = await Post.findOne( { 
+            where: { 
+                id,
+                estado: true
+            } 
+        });
+
+        if ( titulo ) post.titulo = titulo;
+        if ( contenido ) post.contenido = contenido;
+        if ( imagen ) post.imagen = imagen;
+
+        const updatePost = await post.save();        
 
         return res.status( 200 ).json({
             status: 200,
-            msg: `PUT - Post ${ id } `,
-            body
+            msg: 'Post actualizado',
+            updatePost
         });
 
     } catch (error) {
@@ -87,10 +164,22 @@ const deletePost = async ( req = request, res = response ) => {
     try {
 
         const { id } = req.params;
-        
+
+        const post = await Post.findOne( { 
+            where: { 
+                id,
+                estado: true
+            } 
+        });
+
+        post.estado = false;
+
+        const updatePost = await post.save();        
+
         return res.status( 200 ).json({
             status: 200,
-            msg: `DELETE - Post ${ id }`
+            msg: 'Post eliminado',
+            updatePost
         });
 
     } catch (error) {
