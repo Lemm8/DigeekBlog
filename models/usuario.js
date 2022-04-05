@@ -1,5 +1,7 @@
 const { Sequelize, DataTypes, Model } = require('sequelize');
 const db = require('../db/connection');
+const bcryptjs = require('bcryptjs');
+const { encriptarContrasena } = require('../helpers/encriptar');
 
 class Usuario extends Model {}
 
@@ -20,6 +22,11 @@ Usuario.init({
       allowNull: false,
       unique: true
   },
+
+  contrasena: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
   
   estado: {
       type: DataTypes.BOOLEAN,
@@ -31,7 +38,12 @@ Usuario.init({
 
   tableName: 'usuarios',
   sequelize: db, // We need to pass the connection instance
-  modelName: 'Usuario' // We need to choose the model name
+  modelName: 'Usuario', // We need to choose the model name
+  hooks: {
+    beforeCreate: ( usuario ) => {
+      usuario.contrasena = encriptarContrasena( usuario.contrasena )
+    }
+  }
 
 });
 

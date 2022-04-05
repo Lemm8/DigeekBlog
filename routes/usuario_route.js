@@ -8,7 +8,8 @@ const { getUsuarios,
         deleteUsuario } = require('../controllers/usuario_controller');
 
 const { existeCorreo,
-        existeUsuario } = require('../helpers/db-validators');
+        existeUsuario, 
+        validarContrasena } = require('../helpers/db-validators');
 
 const { validarCampos } = require('../middlewares/validar-campos');
 
@@ -30,6 +31,8 @@ router.post( '/', [
     check( 'correo', 'El correo es obligaotrio' ).exists(),
     check( 'correo', 'Este correo no es válido' ).isEmail(),
     check( 'correo' ).custom( existeCorreo ),
+    check( 'contrasena', 'La contraseña es obligatoria' ).exists(),
+    check( 'contrasena' ).custom( validarContrasena ),
     validarCampos
 ], postUsuario );
 

@@ -7,6 +7,7 @@ const usuariosRoute = require('../routes/usuario_route')
 const postsRoute = require('../routes/post_route');
 const comentariosRoute = require('../routes/comentario_route');
 const areasRoute = require('../routes/area_route');
+const authRoute = require('../routes/auth_route')
 
 class Server {
     
@@ -20,7 +21,8 @@ class Server {
             usuarios: '/api/usuarios',
             posts: '/api/posts',
             comentarios: '/api/comentarios',
-            areas: '/api/areas'
+            areas: '/api/areas',
+            auth: '/api/auth'
         }        
         // CONEXIÓN CON BD
         this.conectarDB();
@@ -67,6 +69,7 @@ class Server {
         this.app.use( this.apiPaths.comentarios, comentariosRoute );
         this.app.use( this.apiPaths.posts, postsRoute );
         this.app.use( this.apiPaths.areas, areasRoute );
+        this.app.use( this.apiPaths.auth, authRoute );
 
     }
 

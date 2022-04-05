@@ -3,6 +3,15 @@ const Area = require('../models/area');
 const Comentario = require('../models/comentario');
 const Post = require('../models/post');
 
+const validarContrasena = async ( contrasena = '' ) => {
+    
+    const valida = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#.?&])[A-Za-z\d@$!%*#.?&]{8,}$/.test( contrasena );
+    if ( !valida ) {
+        throw new Error( 'La contraseña debe tener mínimo 8 caractéres, mínimo 1 mayúscula, mínimo 1 minúscula y 1 caractér especial' );
+    }
+
+};
+
 const existeCorreo = async ( correo = '' ) => {
     const existeCorreo = await Usuario.findOne( {
         where: {
@@ -70,6 +79,7 @@ const existeComentario = async ( id = '' ) => {
 
 
 module.exports = {
+    validarContrasena,
     existeCorreo,
     existeUsuario,
     existeArea,
