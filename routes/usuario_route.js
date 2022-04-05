@@ -12,6 +12,7 @@ const { existeCorreo,
         validarContrasena } = require('../helpers/db-validators');
 
 const { validarCampos } = require('../middlewares/validar-campos');
+const { validarJWT } = require('../middlewares/validar-jwt');
 
 const router = Router();
 
@@ -38,12 +39,14 @@ router.post( '/', [
 
 // ACTUALIZAR UN USUARIO
 router.put( '/:id', [
+    validarJWT,
     check( 'id' ).custom( existeUsuario ),    
     validarCampos
 ], putUsuario );
 
 // ELIMINAR UN USUARIO
 router.delete( '/:id', [
+    validarJWT,
     check( 'id' ).custom( existeUsuario ),
     validarCampos
 ], deleteUsuario );

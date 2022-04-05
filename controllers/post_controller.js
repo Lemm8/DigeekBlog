@@ -91,7 +91,11 @@ const getPost = async ( req = request, res = response ) => {
 const postPost = async ( req = request, res = response ) => {
     try {
         
-        const { body } = req;
+        let { body } = req;
+
+        const { usuario } = req;
+        
+        body.UsuarioId = usuario.id;
 
         const createdPost = await Post.create( 
             body, {

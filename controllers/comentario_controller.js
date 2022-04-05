@@ -91,7 +91,9 @@ const getComentario = async ( req = request, res = response ) => {
 const postComentario = async ( req = request, res = response ) => {
     try {
         
-        const { body } = req;
+        let { body } = req;
+        
+        body.UsuarioId = req.usuario.id;
 
         const createdComentario = await Comentario.create( 
             body, {

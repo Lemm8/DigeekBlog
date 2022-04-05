@@ -13,6 +13,7 @@ const { existePost,
     
 const { validarCampos } = require('../middlewares/validar-campos');
             
+const { validarJWT } = require('../middlewares/validar-jwt');
 
 const router = Router();
 
@@ -27,8 +28,7 @@ router.get( '/:id', [
 
 // CREAR UN Comentario
 router.post( '/', [
-    check( 'UsuarioId' ).exists(),
-    check( 'UsuarioId' ).custom( existeUsuario ),
+    validarJWT,
     check( 'PostId' ).exists(),
     check( 'PostId' ).custom( existePost ),
     check( 'contenido' ).exists(),
@@ -37,12 +37,14 @@ router.post( '/', [
 
 // ACTUALIZAR UN Comentario
 router.put( '/:id', [
+    validarJWT,
     check( 'id' ).custom( existeComentario ),
     validarCampos
 ], putComentario );
 
 // ELIMINAR UN Comentario
 router.delete( '/:id', [
+    validarJWT,
     check( 'id' ).custom( existeComentario ),
     validarCampos
 ], deleteComentario );

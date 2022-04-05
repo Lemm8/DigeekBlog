@@ -9,6 +9,8 @@ const { getAreas,
 
 const { existeArea } = require('../helpers/db-validators');
 
+const { validarJWT } = require('../middlewares/validar-jwt');
+
 const { validarCampos } = require('../middlewares/validar-campos');
 
 const router = Router();
@@ -24,18 +26,21 @@ router.get( '/:id', [
 
 // CREAR UN Area
 router.post( '/', [
+    validarJWT,
     check( 'nombre', 'El nombre es obligatorio' ).exists(),
     validarCampos
 ], postArea );
 
 // ACTUALIZAR UN Area
 router.put( '/:id', [
+    validarJWT,
     check( 'id' ).custom( existeArea ),
     validarCampos
 ], putArea );
 
 // ELIMINAR UN Area
 router.delete( '/:id', [
+    validarJWT,
     check( 'id' ).custom( existeArea ),
     validarCampos
 ], deleteArea );

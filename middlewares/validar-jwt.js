@@ -18,10 +18,10 @@ const validarJWT = async ( req = request, res = response, next ) => {
     try {
 
         // VERIFICAR JWT Y OBTENER PAYLOAD ( UID ) 
-        const { uid } = jwt.verify( token, process.env.SECRETORPRIVATEKEY );
+        const { id } = jwt.verify( token, process.env.SECRETORPRIVATEKEY );
 
         // LEER USUARIO CORRESPONDIENTE
-        const usuario = await Usuario.findById( uid );
+        const usuario = await Usuario.findByPk( id );
 
         // SI USUARIO NO EXISTE
         if ( !usuario ) {
