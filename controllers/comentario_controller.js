@@ -1,4 +1,6 @@
 const { response, request } = require('express');
+const Sequelize = require( "sequelize" );
+const Op = Sequelize.Op;
 
 const Comentario = require('../models/comentario');
 const Post = require('../models/post');
@@ -7,7 +9,7 @@ const Usuario = require('../models/usuario');
 const getComentarios = async ( req = request, res = response ) => {
     try {
         
-        let { limit, offset, titulo, comentario, usuario } = req.query;
+        let { limit, offset, contenido, usuario, post } = req.query;
 
         if ( !limit ) {
             limit = 10
@@ -19,9 +21,9 @@ const getComentarios = async ( req = request, res = response ) => {
 
         let where = {
             estado: true,
-            ...( titulo && { titulo } ),
-            ...( comentario && { ComentarioId: Comentario } ),
+            ...( contenido && { contenido: { [ Op.like ]: `%${ contenido }%` } } ),
             ...( usuario && { UsuarioId: usuario } ),
+            ...( post && { PostId: post } )
         }
 
         const comentarios = await Comentario.findAndCountAll({
@@ -57,16 +59,7 @@ const getComentario = async ( req = request, res = response ) => {
         
         const { id } = req.params;
 
-        const comentario = await Comentario.findOne( {
-            include: [{
-                model: Post,
-                as: 'Post',
-                required: true
-            }, {
-                model: Usuario,
-                as: 'Usuario',
-                required: true 
-            }],
+        const comentario = await Comentario.findOne( {            
             where: {
                 id,
                 estado: true
@@ -96,17 +89,7 @@ const postComentario = async ( req = request, res = response ) => {
         body.UsuarioId = req.usuario.id;
 
         const createdComentario = await Comentario.create( 
-            body, {
-                include: [{
-                    model: Post,
-                    as: 'Post',
-                    required: true
-                }, {
-                    model: Usuario,
-                    as: 'Usuario',
-                    required: true 
-                }]
-            }
+            body
         );
 
         const comentario = await Comentario.findByPk( createdComentario.id );

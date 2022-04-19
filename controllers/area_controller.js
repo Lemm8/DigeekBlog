@@ -1,4 +1,6 @@
 const { response, request } = require('express');
+const Sequelize = require( "sequelize" );
+const Op = Sequelize.Op;
 
 const Area = require('../models/Area');
 

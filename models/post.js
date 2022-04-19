@@ -37,14 +37,23 @@ Post.init({
     where: {
       estado: true,      
     },
+    attributes: {
+      exclude: [ 'UsuarioId', 'AreaId' ]
+    },
     include: [{
       model: Usuario,
       as: 'Usuario',
-      required: true
+      required: true,
+      attributes: {
+        exclude: [ 'createdAt', 'updatedAt' ]
+      }, 
     }, {
       model: Area,
       as: 'Area',
-      required: true
+      required: true,
+      attributes: {
+        exclude: [ 'createdAt', 'updatedAt' ]
+      }
     }]
   }
 

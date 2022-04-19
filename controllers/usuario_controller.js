@@ -1,4 +1,6 @@
 const { response, request } = require('express');
+const Sequelize = require( "sequelize" );
+const Op = Sequelize.Op;
 
 const Usuario = require('../models/usuario');
 
@@ -17,9 +19,9 @@ const getUsuarios = async ( req = request, res = response ) => {
 
         let where = {
             estado: true,
-            ...( correo && { correo } ),
-            ...( nombre && { nombre } ),
-            ...( apellidos && { apellidos } )
+            ...( correo && { correo: { [ Op.like ]: `%${ correo }%` } } ),
+            ...( nombre && { nombre: { [ Op.like ]: `%${ nombre }%` } } ),
+            ...( apellidos && { apellidos: { [ Op.like ]: `%${ apellidos }%` } } )
         }
 
         const usuarios = await Usuario.findAndCountAll({
@@ -31,7 +33,7 @@ const getUsuarios = async ( req = request, res = response ) => {
         if ( usuarios.count === 0 ) {
             return res.status( 404 ).json({
                 status: 404,
-                msg: 'No hay registros de usuarios en la base de datos'
+                msg: 'No se encontraron usuarios'
             });
         }
 

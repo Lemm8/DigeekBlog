@@ -8,7 +8,6 @@ const { getPosts,
         deletePost } = require('../controllers/post_controller');
 
 const { existePost,
-        existeUsuario,
         existeArea } = require('../helpers/db-validators');
 
 const { validarCampos } = require('../middlewares/validar-campos');
@@ -23,7 +22,7 @@ router.get( '/', getPosts);
 router.get( '/:id', [
     check( 'id' ).custom( existePost ),
     validarCampos
-],getPost);
+], getPost);
 
 // CREAR UN POST
 router.post( '/', [
@@ -33,14 +32,14 @@ router.post( '/', [
     check( 'titulo', 'El título es obligatorio' ).exists(),
     check( 'contenido', 'El contenido es obligatorio' ).exists(),
     validarCampos
-],postPost );
+], postPost );
 
 // ACTUALIZAR UN POST
 router.put( '/:id', [
     validarJWT,
     check( 'id' ).custom( existePost ),
     validarCampos
-],putPost );
+], putPost );
 
 // ELIMINAR UN POST
 router.delete( '/:id', [

@@ -1,4 +1,6 @@
 const { response, request } = require('express');
+const Sequelize = require( "sequelize" );
+const Op = Sequelize.Op;
 
 const Post = require('../models/post');
 const Area = require('../models/Area');
@@ -19,14 +21,14 @@ const getPosts = async ( req = request, res = response ) => {
 
         let where = {
             estado: true,
-            ...( titulo && { titulo } ),
+            ...( titulo && { titulo: { [ Op.like ]: `%${ titulo }%` } } ),
             ...( area && { AreaId: area } ),
             ...( usuario && { UsuarioId: usuario } ),
         }
 
         const posts = await Post.findAndCountAll({
             limit,
-            offset,            
+            offset,
             where,
         })
 
@@ -57,16 +59,7 @@ const getPost = async ( req = request, res = response ) => {
         
         const { id } = req.params;
 
-        const area = await Post.findOne( {
-            include: [{
-                model: Area,
-                as: 'Area',
-                required: true
-            }, {
-                model: Usuario,
-                as: 'Usuario',
-                required: true 
-            }],
+        const post = await Post.findOne( {            
             where: {
                 id,
                 estado: true
@@ -75,7 +68,7 @@ const getPost = async ( req = request, res = response ) => {
         
         return res.status( 200 ).json({
             status: 200,
-            area
+            post
         });
 
     } catch (error) {

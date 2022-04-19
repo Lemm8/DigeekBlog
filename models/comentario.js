@@ -27,14 +27,23 @@ Comentario.init({
     where: {
       estado: true,      
     },
+    attributes: {
+      exclude: [ 'UsuarioId', 'PostId' ]
+    },
     include: [{
       model: Usuario,
       as: 'Usuario',
-      required: true
+      required: true,
+      attributes: {
+        exclude: [ 'createdAt', 'updatedAt' ]
+      }
     }, {
       model: Post,
       as: 'Post',
-      required: true
+      required: true,
+      attributes: {
+        exclude: [ 'createdAt', 'updatedAt', 'UsuarioId', 'AreaId' ]
+      }
     }]
   }
 
