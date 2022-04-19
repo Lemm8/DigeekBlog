@@ -11,22 +11,22 @@ const getAreas = async ( req = request, res = response ) => {
 
         if ( !limit ) {
             limit = 10
-        }
+        };
 
         if ( !offset ) {
             offset = 0
-        }
+        };
 
         let where = {
             estado: true,
-            ...( nombre && { nombre } ),
-        }
+            ...( nombre && { nombre: { [ Op.like ]: `%${ nombre }%` } } ),
+        };
 
         const areas = await Area.findAndCountAll({
             limit,
             offset,
             where
-        })
+        });
 
         if ( areas.count === 0 ) {
             return res.status( 404 ).json({
