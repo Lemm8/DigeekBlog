@@ -10,5 +10,27 @@
     
     <h1>Digeek Blog</h1>
 
+    <form action="/api/posts" method="POST", enctype="multipart/form-data" id="myForm" >
+        <input type="file" multiple="multiple" name="uploadedImages">
+        <input type="file" name="content">        
+        <input type="submit">
+    </form>
+
+    <script>
+        document.getElementById("myForm").addEventListener("submit", myFunction);
+        
+        function myFunction() {
+          fetch( 'http://localhost:8080/api/posts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjUxNjMwMDM0LCJleHAiOjE2NTE3MTY0MzR9.3S5viPxTRxVfVKg75fDks72oDTZyD9kKBnqxlpO9CJE'
+            }
+          }).then( res => {
+            console.log( 'archivos subidos' );
+          });
+        }
+    </script>
+
 </body>
 </html>

@@ -10,13 +10,11 @@ const login = async( req = request, res = response )  => {
     const { correo, contrasena } = req.body
 
     try {
-        console.log( correo );
         const usuario = await Usuario.findOne({
             where: {
                 correo
             }
         });
-        console.log( usuario )
         if ( !usuario ) {
             return res.status( 400 ).json({
                 msg: 'El correo y/o la contraseña son incorrectos, vuelva a intentar'

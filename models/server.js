@@ -22,7 +22,7 @@ class Server {
             posts: '/api/posts',
             comentarios: '/api/comentarios',
             areas: '/api/areas',
-            auth: '/api/auth'
+            auth: '/api/auth',
         }        
         // CONEXIÓN CON BD
         this.conectarDB();
@@ -40,7 +40,7 @@ class Server {
         try {
             
             await db.authenticate();
-            //await db.sync( { force: true } );
+            // await db.sync( { force: true } );
             console.log( 'Database online' );
 
         } catch ( error ) {

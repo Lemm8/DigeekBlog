@@ -7,13 +7,13 @@ const Usuario = require('../models/usuario');
 const validarJWT = async ( req = request, res = response, next ) => {
 
     const token = req.header('x-token');
-
     if ( !token ) {
         return res.status( 401 ).json({
             status: 401,
             msg: 'El token no se encuentra en la petición'
         });
     }
+
 
     try {
 
