@@ -23,7 +23,7 @@ authors: ['${req.usuario.nombre}']
 
 ${cuerpo}`;
         
-        fs.writeFileSync( `${process.env.BASE_DIR}/${titulo}.mdx`, articulo );
+        fs.writeFileSync( `${process.env.BASE_DIR}/blog/${titulo}.mdx`, articulo );
         return res.status(200).json({
             status: 200,
             msg: 'Archivo creado y guardado con exito'

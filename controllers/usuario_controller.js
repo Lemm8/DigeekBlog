@@ -1,6 +1,7 @@
 const { response, request } = require('express');
 const Sequelize = require( "sequelize" );
 const Op = Sequelize.Op;
+const fs = require('fs');
 
 const Usuario = require('../models/usuario');
 
@@ -82,15 +83,34 @@ const getUsuario = async ( req = request, res = response ) => {
 const postUsuario = async ( req = request, res = response ) => {
     try {
         
-        const { body } = req;
+        const { avatar, twitter, permiso, ...body } = req.body;
 
-        const usuario = await Usuario.create( body );
+        if ( permiso === process.env.POST_USER_PASSWORD ) {
 
-        return res.status( 200 ).json({
-            status: 200,
-            msg: 'Usuario creado',
-            usuario
-        });
+            const usuario = await Usuario.create( body );
+
+            const autor = `---
+name: ${body.nombre}
+email: ${body.correo}
+${ avatar ? `avatar: ${avatar}` : '' }
+${ twitter ? `twitter: ${twitter}` : '' }
+---`;
+    
+            fs.writeFileSync( `${process.env.BASE_DIR}/authors/${body.nombre}.md`, autor );
+
+            return res.status( 200 ).json({
+                status: 200,
+                msg: 'Usuario creado',
+                usuario
+            });
+        } else {
+            return res.status( 400 ).json({
+                status: 400,
+                msg: 'Contraseña incorrecta, vuelva a intentarlo',
+            });
+        }
+
+
 
     } catch (error) {
         console.log( error );
