@@ -7,7 +7,7 @@ const usuariosRoute = require('../routes/usuario_route')
 const postsRoute = require('../routes/post_route');
 const comentariosRoute = require('../routes/comentario_route');
 const areasRoute = require('../routes/area_route');
-const authRoute = require('../routes/auth_route')
+const authRoute = require('../routes/auth_route');
 
 class Server {
     

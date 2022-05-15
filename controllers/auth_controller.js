@@ -17,26 +17,33 @@ const login = async( req = request, res = response )  => {
         });
         if ( !usuario ) {
             return res.status( 400 ).json({
-                msg: 'El correo y/o la contraseña son incorrectos, vuelva a intentar'
+                status: 400,                
+                field: 'correo',
+                msg: `No se encontro un usuario con este correo ${ correo }, vuelva a intentar`
             })
         }
 
         if( !usuario.estado ) {
             return res.status( 400 ).json({
-                msg: 'El correo y/o la contraseña son incorrectos, vuelva a intentar'
+                status: 400,                
+                field: 'correo',
+                msg: `No se encontro un usuario con este correo ${ correo }, vuelva a intentar`
             })
         }
 
         const validar = bcryptjs.compareSync( contrasena, usuario.contrasena );
         if ( !validar ) {
             return res.status( 400 ).json({
-                msg: 'El correo y/o la contraseña son incorrectos, vuelva a intentar'
+                status: 400,
+                field: 'contrasena',
+                msg: 'La contraseña es incorrecta, vuelva a intentar'
             })
         }
 
         const token = await generarJWT( usuario.id );
 
         return res.status( 200 ).json({
+            status: 200,
             usuario, 
             token
         });
